@@ -1,0 +1,206 @@
+{% extends "base.html" %} {% load static %} {% block 'body' %}
+
+<div class="flex min-h-screen bg-[#1B1C1D]">
+  <div class="flex flex-1 flex-col px-4 py-12 sm:px-6 lg:px-20 xl:px-24">
+    <div class="mx-auto w-full max-w-7xl">
+      <div class="flex items-center gap-x-4">
+        <img class="h-8 w-auto" src="{% static 'logo.png' %}" alt="Logo" />
+        <nav class="hidden lg:flex lg:gap-x-8">
+          <a href="#" class="text-sm/6 font-semibold text-gray-300">Mentees</a>
+          <a href="#" class="text-sm/6 font-semibold text-gray-300">Tasks</a>
+          <a href="#" class="text-sm/6 font-semibold text-gray-300">Progress</a>
+          <a href="#" class="text-sm/6 font-semibold text-gray-300">Mentors</a>
+        </nav>
+      </div>
+
+      <div class="grid grid-cols-2 gap-8 mt-12">
+        <div>
+          <h2 class="text-2xl/9 font-bold tracking-tight text-gray-100">
+            Enter your mentees
+          </h2>
+
+          {% if messages %} {% for message in messages %}
+          <div class="rounded-md {{message.tags}} mt-4">
+            <div class="flex">
+              <div class="ml-3 py-4">{{message}}</div>
+            </div>
+          </div>
+          {% endfor %} {% endif %}
+
+          <form
+            action="{% url 'mentorship' %}"
+            method="POST"
+            enctype="multipart/form-data"
+          >
+            {% csrf_token %}
+            <div>
+              <label
+                for="name"
+                class="block text-sm/6 font-medium text-gray-300"
+                >Name</label
+              >
+              <div class="mt-2">
+                <input
+                  type="text"
+                  name="name"
+                  required
+                  class="block w-full rounded-md bg-[#282A2C] px-3 py-2.5 text-white outline-none border border-gray-700 placeholder:text-gray-500 focus:ring-2 focus:ring-[#c48075] focus:border-transparent sm:text-sm/6"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm/6 font-medium text-gray-300"
+                  >Image</label
+                >
+                <div class="mt-2">
+                  <input
+                    type="file"
+                    name="image"
+                    id="image"
+                    autocomplete="image"
+                    required
+                    class="block w-full rounded-md bg-[#282A2C] px-3 py-1.5 text-white outline-none border border-gray-700 placeholder:text-gray-500 focus:ring-2 focus:ring-[#c48075] focus:border-transparent sm:text-sm/6"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm/6 font-medium text-gray-300">
+                  Stage
+                </label>
+                <div class="mt-2">
+                  <select
+                    name="stage"
+                    class="block w-full rounded-md bg-[#282A2C] px-3 py-2.5 text-white outline-none border border-gray-700 focus:ring-2 focus:ring-[#c48075] focus:border-transparent sm:text-sm/6"
+                  >
+                    {% for stage in stages %}
+                    <option value="{{stage.0}}" class="text-slate-900">
+                      {{stage.1}}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm/6 font-medium text-gray-300">
+                Mentor
+              </label>
+              <div class="mt-2">
+                <select
+                  name="mentor"
+                  class="block w-full rounded-md bg-[#282A2C] px-3 py-2.5 text-white outline-none border border-gray-700 focus:ring-2 focus:ring-[#c48075] focus:border-transparent sm:text-sm/6"
+                >
+                  {% for mentor in mentors %}
+                  <option value="{{mentor.id}}">{{mentor.name}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="flex w-full justify-center rounded-md bg-[#c48075] px-3 py-2.5 text-sm/6 font-semibold text-gray-900 hover:bg-teal-400 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c48075]"
+            >
+              Cadastrar
+            </button>
+          </form>
+        </div>
+
+        <div class="flex justify-center items-center">
+          <canvas id="myChart" class="w-full h-auto max-w-md"></canvas>
+        </div>
+      </div>
+
+      <div class="mt-12">
+        <hr class="border-gray-700" />
+        <h2 class="mt-6 text-xl font-semibold text-gray-100">Your mentees</h2>
+
+        <div class="mt-6 overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-700">
+            <thead>
+              <tr>
+                <th
+                  scope="col"
+                  class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-300 sm:pl-0"
+                >
+                  User
+                </th>
+                <th
+                  scope="col"
+                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-300"
+                >
+                  Stage
+                </th>
+                <th
+                  scope="col"
+                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-300"
+                >
+                  Status
+                </th>
+                <th
+                  scope="col"
+                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-300"
+                >
+                  Data entrada
+                </th>
+                <th
+                  scope="col"
+                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-300"
+                >
+                  Mentor
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-800">
+              {% for mentee in mentees %}
+              <tr>
+                <td
+                  class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-white sm:pl-0"
+                >
+                  <div class="flex items-center gap-x-4">
+                    <img
+                      src="{{mentee.image.url}}"
+                      alt=""
+                      class="h-8 w-8 rounded-full bg-gray-800"
+                    />
+                    <div>{{mentee.name}}</div>
+                  </div>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-400">
+                  <div
+                    class="rounded-md bg-gray-700/40 px-2 py-1 text-xs font-medium text-gray-400 ring-1 ring-inset ring-white/10"
+                  >
+                    {{mentee.get_stage_display}}
+                  </div>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-400">
+                  <div class="flex items-center gap-x-2">
+                    <div
+                      class="flex-none rounded-full bg-green-400/10 p-1 text-green-400"
+                    >
+                      <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+                    </div>
+                    <div class="text-white">Ativo</div>
+                  </div>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-400">
+                  {{mentee.created_at}}
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-400">
+                  {{mentee.mentor.name}}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock 'body' %}

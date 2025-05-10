@@ -1,0 +1,134 @@
+{% extends "base.html" %} {% block 'body' %} {% load static %}
+
+<div class="flex min-h-screen bg-[#1B1C1D]">
+  <div
+    class="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
+  >
+    <div class="mx-auto w-full max-w-sm lg:w-96">
+      <div>
+        <img
+          class="h-12 w-auto mb-2"
+          src="{% static 'logo.png' %}"
+          alt="Logo"
+        />
+        <h2 class="mt-2 text-2xl/9 font-bold tracking-tight text-gray-100">
+          Sign in to your account
+        </h2>
+        <p class="mt-2 text-sm/6 text-gray-400">
+          Don't have an account?
+          <a
+            href="{% url 'signup' %}"
+            class="font-semibold text-[#c48075] hover:text-teal-300 transition-colors"
+            >Sign up</a
+          >
+        </p>
+        {% if messages %} {% for message in messages %}
+        <div class="rounded-md {{message.tags}} mt-4">
+          <div class="flex">
+            <div class="ml-3 py-4">{{message}}</div>
+          </div>
+        </div>
+        {% endfor %} {% endif %}
+      </div>
+
+      <div class="mt-8">
+        <div>
+          <form action="{% url 'login' %}" method="POST" class="space-y-6">
+            {% csrf_token %}
+            <div>
+              <label
+                for="username"
+                class="block text-sm/6 font-medium text-gray-300"
+                >Username</label
+              >
+              <div class="mt-2">
+                <input
+                  id="username"
+                  type="text"
+                  name="username"
+                  required
+                  autofocus
+                  class="block w-full rounded-md bg-[#282A2C] px-3 py-2.5 text-white outline-none border border-gray-700 placeholder:text-gray-500 focus:ring-2 focus:ring-[#c48075] focus:border-transparent sm:text-sm/6"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                for="password"
+                class="block text-sm/6 font-medium text-gray-300"
+                >Password</label
+              >
+              <div class="mt-2">
+                <input
+                  id="password"
+                  type="password"
+                  name="password"
+                  required
+                  class="block w-full rounded-md bg-[#282A2C] px-3 py-2.5 text-white outline-none border border-gray-700 placeholder:text-gray-500 focus:ring-2 focus:ring-[#c48075] focus:border-transparent sm:text-sm/6"
+                />
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                id="submit-btn"
+                class="flex w-full justify-center items-center rounded-md bg-[#c48075] px-3 py-2.5 text-sm/6 font-semibold text-gray-900 hover:bg-teal-400 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c48075]"
+              >
+                <span id="btn-text">Log In</span>
+                <svg
+                  id="loading-spinner"
+                  class="hidden w-5 h-5 ml-2 text-gray-900 animate-spin"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+
+            <div class="relative">
+              <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-gray-700"></div>
+              </div>
+              <div class="relative flex justify-center text-sm">
+                <span class="px-2 bg-[#1B1C1D] text-gray-400"
+                  >Or continue with</span
+                >
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="relative hidden w-0 flex-1 lg:block">
+    <div class="absolute inset-0 bg-black/30 z-1"></div>
+    <img
+      class="absolute inset-0 size-full object-cover"
+      src="https://od.lk/s/OThfNDExNTc3MTVf/bg-dragons.jpeg"
+      alt="Background"
+      loading="lazy"
+    />
+    <div class="absolute bottom-10 left-10 text-white z-10">
+      <h3 class="text-2xl font-bold">Welcome to Our Platform</h3>
+      <p class="mt-2 opacity-80">Join thousands of happy users today</p>
+    </div>
+  </div>
+</div>
+
+{% endblock 'body' %}
