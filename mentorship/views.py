@@ -117,9 +117,12 @@ def book_meeting(request):
         date = request.GET.get("date")
         date = datetime.strptime(date, '%m-%d-%Y')
 
+        mentee=validate_token(request.COOKIES.get('auth_token'))
+
         available_dates = Availability.objects.filter(
             start_time__gte=date,
             start_time__lt=date + timedelta(days=1),
             is_booked=False
+            mentor=mentee.user
         )
         return render(request, 'book_meeting.html', {'available_dates': available_dates, 'tags': Meeting.tag_choices})
