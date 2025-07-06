@@ -4,7 +4,7 @@
   <div class="flex flex-1 flex-col px-4 py-12 sm:px-6 lg:px-20 xl:px-24">
     <div class="mx-auto w-full max-w-7xl">
       <div class="flex items-center gap-x-4">
-        <img class="h-8 w-auto" src="{% static 'logo.png' %}" alt="Logo" />
+        <img class="h-8 w-auto" src="{% static 'lima-logo.png' %}" alt="Logo" />
         <nav class="hidden lg:flex lg:gap-x-8">
           <a href="#" class="text-sm/6 font-semibold text-gray-300">Mentees</a>
           <a href="#" class="text-sm/6 font-semibold text-gray-300">Tasks</a>
@@ -202,5 +202,21 @@
     </div>
   </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx = document.getElementById('myChart');
+
+  new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: {{ stages_flat|safe }},
+      datasets: [{
+        label: '',
+        data: {{ qty_stages|safe }},
+        borderWidth: 1
+  }] }, });
+</script>
 
 {% endblock 'body' %}
