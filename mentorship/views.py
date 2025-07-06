@@ -122,7 +122,7 @@ def book_meeting(request):
         available_dates = Availability.objects.filter(
             start_time__gte=date,
             start_time__lt=date + timedelta(days=1),
-            is_booked=False
+            is_booked=False,
             mentor=mentee.user
         )
         return render(request, 'book_meeting.html', {'available_dates': available_dates, 'tags': Meeting.tag_choices})

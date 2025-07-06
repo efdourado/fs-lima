@@ -17,7 +17,7 @@
       >
         {% for date in available_dates %}
         <option value="{{date.id}}" class="text-slate-900">
-          {{date.start_time.time}} às {{date.end_time.time}}
+          {{date.start_time.time}} to {{date.end_time.time}}
         </option>
         {% endfor %}
       </select>
