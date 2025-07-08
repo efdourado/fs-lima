@@ -1,17 +1,20 @@
-from .models import Mentor, Mentee, Availability, Meeting
+from .models import Mentor, Mentee, Availability, Meeting, Task, Upload
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.messages import constants
 
+from django.contrib.auth.decorators import login_required
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+
 from datetime import datetime, timedelta
 
 from .auth import validate_token
 
+@login_required
 def mentorship(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-    
     if request.method == 'GET':
         mentors = Mentor.objects.filter(user=request.user)
         mentees = Mentee.objects.filter(user=request.user)
@@ -37,10 +40,11 @@ def mentorship(request):
         messages.add_message(request, constants.SUCCESS, 'Mentee created successfully!')
         return redirect('mentorship')
 
-    
+@login_required
 def meetings(request):
     if request.method == 'GET':
-        return render(request, 'meetings.html')
+        meetings = Meeting.objects.filter(date__mentor=request.user)
+        return render(request, 'meetings.html', { 'meetings': meetings })
 
     else:
         date = request.POST.get('date')
@@ -113,11 +117,11 @@ def book_meeting(request):
     if not validate_token(request.COOKIES.get('auth_token')):
         return redirect('auth_mentee')
 
+    mentee=validate_token(request.COOKIES.get('auth_token'))
+
     if request.method == 'GET':
         date = request.GET.get("date")
         date = datetime.strptime(date, '%m-%d-%Y')
-
-        mentee=validate_token(request.COOKIES.get('auth_token'))
 
         available_dates = Availability.objects.filter(
             start_time__gte=date,
@@ -126,3 +130,86 @@ def book_meeting(request):
             mentor=mentee.user
         )
         return render(request, 'book_meeting.html', {'available_dates': available_dates, 'tags': Meeting.tag_choices})
+    
+    else:
+        date_id = request.POST.get('date')
+        tag = request.POST.get('tag')
+        description = request.POST.get("description")
+
+        #TODO: Realizar validações
+
+        # add ATOMICIDADE
+
+        meeting = Meeting( 
+            date_id=date_id,
+            mentee=mentee,
+            tag=tag,
+            description=description
+        )
+        meeting.save()
+
+        date = Availability.objects.get(id=date_id)
+        date.is_booked = True
+        date.save()
+
+        messages.add_message(request, constants.SUCCESS, 'Meeting booked successfully.')
+        return redirect('choose_day')
+
+def task(request, id):
+    mentee = Mentee.objects.get(id=id)
+    if mentee.user != request.user:
+        raise Http404()
+    
+    if request.method == 'GET':
+        tasks = Task.objects.filter(mentee=mentee)
+        videos = Upload.objects.filter(mentee=mentee)
+        
+        return render(request, 'task.html', {'mentee': mentee, 'tasks': tasks, 'videos': videos})
+
+    else:
+        task = request.POST.get('task')
+
+        task = Task(
+            mentee=mentee,
+            task=task,
+        )
+        task.save()
+        return redirect(f'/mentorship/task/{id}')
+
+def upload(request, id):
+    mentee = Mentee.objects.get(id=id)
+    if mentee.user != request.user:
+        raise Http404()
+    
+    video = request.FILES.get('video')
+    upload = Upload(
+        mentee=mentee,
+        video=video
+    )
+    upload.save()
+    return redirect(f'/mentorship/task/{mentee.id}')
+
+def task_mentee(request):
+    mentee = validate_token(request.COOKIES.get('auth_token'))
+    if not mentee:
+        return redirect('auth_mentee')
+    
+    if request.method == 'GET':
+        videos = Upload.objects.filter(mentee=mentee)
+        tasks = Task.objects.filter(mentee=mentee)
+        return render(request, 'task_mentee.html', {'mentee': mentee, 'videos': videos, 'tasks': tasks})
+
+@csrf_exempt
+def task_change(request, id):
+    mentee = valida_token(request.COOKIES.get('auth_token'))
+    if not mentee:
+        return redirect('auth_mentee')
+
+    task = Task.objects.get(id=id)
+    if mentee != task.mentee:
+        raise Http404()
+
+    task.done = not task.done
+    task.save()
+
+    return HttpResponse('teste')

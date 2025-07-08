@@ -6,10 +6,8 @@
       <div class="flex items-center gap-x-4">
         <img class="h-8 w-auto" src="{% static 'lima-logo.png' %}" alt="Logo" />
         <nav class="hidden lg:flex lg:gap-x-8">
-          <a href="#" class="text-sm/6 font-semibold text-gray-300">Mentees</a>
-          <a href="#" class="text-sm/6 font-semibold text-gray-300">Tasks</a>
-          <a href="#" class="text-sm/6 font-semibold text-gray-300">Progress</a>
-          <a href="#" class="text-sm/6 font-semibold text-gray-300">Mentors</a>
+          <a href="{% url 'mentorship' %}" class="text-sm/6 font-semibold text-gray-300">Mentorship</a>
+          <a href="{% url 'meetings' %}" class="text-sm/6 font-semibold text-gray-300">Meetings</a>
         </nav>
       </div>
 
@@ -167,7 +165,9 @@
                       alt=""
                       class="h-8 w-8 rounded-full bg-gray-800"
                     />
-                    <div>{{mentee.name}}</div>
+                    <div>
+                      <a href="{% url 'task' mentee.id %}"> {{mentee.name}} </a>
+                    </div>
                   </div>
                 </td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-400">

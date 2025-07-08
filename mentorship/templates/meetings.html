@@ -35,10 +35,8 @@
       </button>
     </div>
     <div class="hidden lg:flex lg:gap-x-12">
-      <a href="#" class="text-sm/6 font-semibold text-gray-100">Mentorship</a>
-      <a href="#" class="text-sm/6 font-semibold text-gray-100">Tasks</a>
-      <a href="#" class="text-sm/6 font-semibold text-gray-100">Progress</a>
-      <a href="#" class="text-sm/6 font-semibold text-gray-100">Mentors</a>
+      <a href="% url 'mentorship' %" class="text-sm/6 font-semibold text-gray-100">Mentorship</a>
+      <a href="% url 'meetings' %" class="text-sm/6 font-semibold text-gray-100">Meetings</a>
     </div>
     <div class="hidden lg:flex lg:flex-1 lg:justify-end"></div>
   </nav>
@@ -81,23 +79,29 @@
       </div>
       <div>
         <ul role="list" class="divide-y divide-gray-800">
+          {% for meeting in meetings %}
           <li class="flex justify-between gap-x-6 py-5">
             <div class="flex min-w-0 gap-x-4">
               <img
                 class="size-12 flex-none rounded-full bg-gray-800"
-                src="#"
+                src="{{meeting.mentee.image.url}}"
                 alt=""
               />
               <div class="min-w-0 flex-auto">
-                <p class="text-sm/6 font-semibold text-white">Name</p>
-                <p class="mt-1 truncate text-xs/5 text-gray-400">Description</p>
+                <p class="text-sm/6 font-semibold text-white">
+                  {{meeting.mentee.name}}
+                </p>
+                <p class="mt-1 truncate text-xs/5 text-gray-400">
+                  {{meeting.description}}
+                </p>
               </div>
             </div>
             <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-              <p class="text-sm/6 text-white">Date</p>
+              <p class="text-sm/6 text-white">{{meeting.date.start_time}}</p>
               <p class="mt-1 text-xs/5 text-gray-400"></p>
             </div>
           </li>
+          {% endfor %}
         </ul>
       </div>
     </div>

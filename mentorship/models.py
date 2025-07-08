@@ -67,3 +67,14 @@ class Meeting(models.Model):
     mentee = models.ForeignKey(Mentee, on_delete=models.CASCADE)
     tag = models.CharField(max_length=2, choices=tag_choices)
     description = models.TextField()
+
+
+class Task(models.Model):
+    mentee = models.ForeignKey(Mentee, on_delete=models.DO_NOTHING)
+    task = models.CharField(max_length=255)
+    done = models.BooleanField(default=False)
+
+
+class Upload(models.Model):
+    mentee = models.ForeignKey(Mentee, on_delete=models.DO_NOTHING)
+    video = models.FileField(upload_to='video')

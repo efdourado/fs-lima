@@ -1,4 +1,5 @@
 {% extends "base.html" %} {% block 'body' %}
+
 <div class="bg-gray-900 flex items-center justify-center h-screen">
   <div class="bg-gray-800 p-8 rounded-lg shadow-lg text-center w-96">
     <form action="{% url 'auth_mentee' %}" method="POST">
@@ -28,4 +29,5 @@
     </form>
   </div>
 </div>
+
 {% endblock 'body' %}
